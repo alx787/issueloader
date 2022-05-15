@@ -1,0 +1,47 @@
+
+
+<html>
+    <head>
+        <meta name="decorator" content="atl.admin"/>
+        <meta name="admin.active.section" content="admin_plugins_menu/setup-issueloader"/>
+
+        $webResourceManager.requireResourcesForContext("issueloader")
+
+    </head>
+
+    <body>
+
+
+        ###################################################
+        ## форма заявки
+        ###################################################
+        <div style="margin: 30px 0 200px 0; text-align: center">
+
+            <h1>Загрузка задач из итилиума</h1>
+
+            <div id="loader-form" class="aui" style="width: 700px; margin: 0 auto;">
+                <div style="margin-top: 20px; text-align: left;">
+                    <label>Идентификатор проекта</label>
+                    <input style="width: 690px; padding: 5px;" type="text" id="project-id" name="project-id" placeholder="Идентификатор проекта" value="DSDP">
+                </div>
+
+                <div style="margin-top: 20px; text-align: left;">
+                    <label>Файл выгрузки</label>
+                    <input style="width: 690px; border: 1px solid #d8dce1; width: 693px; padding: 5px;" type="file" id="issues-file-upload" name="issues-file-upload">
+                </div>
+
+                <div style="margin-top: 40px; text-align: center;">
+                    <div class="buttons">
+                    ##                <input class="aui-button aui-button-primary" type="submit" value="Создать заявку" id="comment-save-button">
+                        <button type="button" class="aui-button aui-button-primary" onclick="issueloader.module.uploadFile();" >Загрузить</button>
+##                        <a class="cancel" href="ordersAction!menu.jspa">Отмена</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+
+    </body>
+</html>

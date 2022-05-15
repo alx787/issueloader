@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<atlassian-plugin key="${atlassian.plugin.key}" name="${project.name}" plugins-version="2"> 
+  <plugin-info> 
+    <description>${project.description}</description>  
+    <version>${project.version}</version>  
+    <vendor name="${project.organization.name}" url="${project.organization.url}"/>  
+    <param name="plugin-icon">images/pluginIcon.png</param>  
+    <param name="plugin-logo">images/pluginLogo.png</param> 
+  </plugin-info>  
+  <!-- add our i18n resource -->  
+  <resource type="i18n" name="i18n" location="issueloader"/>  
+  <!-- add our web resources -->  
+  <web-resource key="issueloader-resources" name="issueloader Web Resources"> 
+    <dependency>com.atlassian.auiplugin:ajs</dependency>
+    <!--<data key="web-data" class="ru.segezhagroup.issueloader.dataprovider.WebDataSharing" />-->
+    <resource type="download" name="issueloader.css" location="/css/issueloader.css"/>  
+    <resource type="download" name="issueloader.js" location="/js/issueloader.js"/>  
+    <resource type="download" name="images/" location="/images"/>  
+    <context>issueloader</context> 
+  </web-resource>  
+  <web-section name="setup issueloader" i18n-name-key="setup-issueloader.name" key="setup-issueloader" location="admin_plugins_menu" weight="1000"> 
+    <description key="setup-issueloader.description">The setup-issueloader Plugin</description>  
+    <label key="setup-issueloader.label"/> 
+  </web-section>  
+  <web-item name="setup issueloader link" i18n-name-key="setup-issueloader-link.name" key="setup-issueloader-link" section="admin_plugins_menu/setup-issueloader" weight="1000"> 
+    <description key="setup-issueloader-link.description">The setup-issueloader-link Plugin</description>  
+    <label key="setup-issueloader-link.label"/>  
+    <link linkId="setup-issueloader-link-link">/secure/loadersetupAction!default.jspa</link> 
+  </web-item>  
+  <webwork1 key="loadersetup" name="loadersetup" i18n-name-key="loadersetup.name"> 
+    <description key="loadersetup.description">The loadersetup Plugin</description>  
+    <actions> 
+      <action name="ru.segezhagroup.issueloader.webwork.LoadersetupAction" alias="loadersetupAction"> 
+        <view name="success">/templates/loadersetup/success.vm</view>  
+        <!--<view name="input">/templates/loadersetup/input.vm</view>  -->  
+        <!--<view name="error">/templates/loadersetup/error.vm</view> --> 
+      </action> 
+    </actions> 
+  </webwork1>  
+  <rest name="Loader Rest" i18n-name-key="loader-rest.name" key="loader-rest" path="/loaderrest" version="1.0"> 
+    <description key="loader-rest.description">The Loader Rest Plugin</description> 
+  </rest>
+</atlassian-plugin>
