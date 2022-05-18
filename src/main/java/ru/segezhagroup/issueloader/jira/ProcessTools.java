@@ -29,6 +29,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -72,7 +75,8 @@ public class ProcessTools {
 
         try {
             // reader
-            Reader reader = new FileReader(jsonFileName);
+//            Reader reader = new FileReader(jsonFileName);
+            Reader reader = Files.newBufferedReader(Paths.get(jsonFileName), StandardCharsets.UTF_8);
             // parse JSON from file path to Customer Class
             sampleIssuesArray = gson.fromJson(reader, SampleIssue[].class);
 
@@ -99,8 +103,15 @@ public class ProcessTools {
             // создадим задачу
             MutableIssue newIssue = createIssue(project, oneSampleIssue);
             if (newIssue != null) {
+                // наблюдатели
                 addWatchers(newIssue, oneSampleIssue.getWatchers());
+                // сообщения переписка
+                // если у задачи есть решение то добавим его отдельным комментарием
+                if (!oneSampleIssue.getDecision().isEmpty()) {
+                    oneSampleIssue.addMessage(new SampleMessage("", "", "", "", "РЕШЕНИЕ:" + "\r\n\r\n" + oneSampleIssue.getDecision()));
+                }
                 addComments(newIssue, oneSampleIssue.getMessages());
+                // вложения
                 addAttachments(newIssue, oneSampleIssue.getAttachments());
             } else {
                 badNumbers.add(oneSampleIssue.getNumber());
@@ -131,16 +142,28 @@ public class ProcessTools {
         log.warn("== project: " + project.getName());
 
         // для разных установок джиры могут быть различные идентификаторы типов задач и возможно статусов тоже
-        issueInputParameters.setIssueTypeId("10100");
-        issueInputParameters.setStatusId("10101");
-        issueInputParameters.setPriorityId("3");
+        // 10511 - запрос на изменение
+        // 10510 - запрос на обслуживание
+        if (sampleIssue.getCategory().equals("Доработка функционала")) {
+            issueInputParameters.setIssueTypeId("10511");
+        } else {
+            issueInputParameters.setIssueTypeId("10510");
+        }
+//        issueInputParameters.setIssueTypeId("10100");
+
+
+//        issueInputParameters.setStatusId("10101");
+        issueInputParameters.setStatusId("10113"); // требуется поддержка
+
+        issueInputParameters.setPriorityId("3"); // medium
 
         issueInputParameters.setSummary(sampleIssue.getSummary());
 
         log.warn("== summary: " + sampleIssue.getSummary());
 
 //    issueInputParameters.setDescription(issue.getDescription())
-        issueInputParameters.setDescription("обращение " + sampleIssue.getNumber() + " от " + sampleIssue.getCreatedate() + "\r\n\r\n" +  sampleIssue.getDescription() + "\r\n\r\n" + sampleIssue.getDecision());
+//        issueInputParameters.setDescription("обращение " + sampleIssue.getNumber() + " от " + sampleIssue.getCreatedate() + "\r\n\r\n" +  sampleIssue.getDescription() + "\r\n\r\n" + sampleIssue.getDecision());
+        issueInputParameters.setDescription("обращение " + sampleIssue.getNumber() + " от " + sampleIssue.getCreatedate() + "\r\n\r\n" +  sampleIssue.getDescription());
 
         log.warn("== description: " + sampleIssue.getSummary());
 
@@ -172,6 +195,7 @@ public class ProcessTools {
             IssueService.IssueResult createResult = issueService.create(jAC.getLoggedInUser(), createValidationResult);
             if (!createResult.isValid()) {
                 log.warn("==================== Error while creating the issue.");
+                return null;
             } else {
                 createdIssue = createResult.getIssue();
                 log.warn(" ==================== Create new issue  ");
@@ -196,7 +220,7 @@ public class ProcessTools {
                 log.warn(warning);
             }
 
-
+            return null;
         }
 
 
@@ -332,9 +356,25 @@ public class ProcessTools {
 
     }
 
+    // ищем пользователя, если не находим то возвращаем текущего
+    private static ApplicationUser createFindUser(String email, String name) {
+        ApplicationUser currentUser = ComponentAccessor.getJiraAuthenticationContext().getLoggedInUser();
+        ApplicationUser user = null;
+
+        if (email.isEmpty())
+            return currentUser;
+
+        user = UserUtils.getUserByEmail(email);
+
+        if (user == null) {
+            return currentUser;
+        }
+
+        return user;
+    }
 
     // найти пользователя или создать нового
-    private static ApplicationUser createFindUser(String email, String name) {
+    private static ApplicationUser createFindUser_not_used(String email, String name) {
 
         if (email.isEmpty())
             return null;

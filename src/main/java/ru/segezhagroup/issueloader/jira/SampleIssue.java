@@ -48,6 +48,11 @@ public class SampleIssue {
         this.messages = messages;
     }
 
+    public void addMessage(SampleMessage oneMessage) {
+        this.messages.add(oneMessage);
+    }
+
+
     public String getNumber() {
         return number;
     }
