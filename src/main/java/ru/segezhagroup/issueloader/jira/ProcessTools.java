@@ -12,6 +12,7 @@ import com.atlassian.jira.exception.PermissionException;
 import com.atlassian.jira.issue.*;
 import com.atlassian.jira.issue.attachment.CreateAttachmentParamsBean;
 import com.atlassian.jira.issue.comments.CommentManager;
+import com.atlassian.jira.issue.fields.CustomField;
 import com.atlassian.jira.issue.watchers.WatcherManager;
 import com.atlassian.jira.project.Project;
 import com.atlassian.jira.security.JiraAuthenticationContext;
@@ -165,7 +166,7 @@ public class ProcessTools {
 //        issueInputParameters.setDescription("обращение " + sampleIssue.getNumber() + " от " + sampleIssue.getCreatedate() + "\r\n\r\n" +  sampleIssue.getDescription() + "\r\n\r\n" + sampleIssue.getDecision());
         issueInputParameters.setDescription("обращение " + sampleIssue.getNumber() + " от " + sampleIssue.getCreatedate() + "\r\n\r\n" +  sampleIssue.getDescription());
 
-        log.warn("== description: " + sampleIssue.getSummary());
+        log.warn("== description: " + "обращение " + sampleIssue.getNumber() + " от " + sampleIssue.getCreatedate() + "\r\n\r\n" +  sampleIssue.getDescription());
 
 
         ApplicationUser user = null;
@@ -179,6 +180,11 @@ public class ProcessTools {
 //        user = createFindUser(sampleIssue.getAssigneeemail(), sampleIssue.getAssignee());
 //        log.warn("== assignee: " + user.getDisplayName());
 //        issueInputParameters.setAssigneeId(user.getUsername());
+
+//        CustomFieldManager customFieldManager = ComponentAccessor.getCustomFieldManager();
+//        CustomField tgtField = customFieldManager.getCustomFieldObject("customfield_10001");
+//        com.atlassian.servicedesk.internal.customfields.origin.VpOrigin requestType = (com.atlassian.servicedesk.internal.customfields.origin.VpOrigin) tgtField.getCustomFieldType().getSingularObjectFromString("IT help");
+        issueInputParameters.addCustomFieldValue("customfield_10001", "SG1C", "1C: Request for change");
 
 
 
@@ -195,6 +201,22 @@ public class ProcessTools {
             IssueService.IssueResult createResult = issueService.create(jAC.getLoggedInUser(), createValidationResult);
             if (!createResult.isValid()) {
                 log.warn("==================== Error while creating the issue.");
+
+                ErrorCollection creationErrors = createResult.getErrorCollection();
+
+                log.warn("********* some errors while creation new issue *************\n");
+                log.info(String.valueOf(creationErrors.getErrorMessages().size()));
+                for(String error : creationErrors.getErrorMessages()){
+                    log.warn(error);
+                }
+
+                WarningCollection creationWarnings = createResult.getWarningCollection();
+                log.warn("********* some warnings while creation new issue *************\n");
+                log.warn(String.valueOf(creationWarnings.getWarnings().size()));
+                for(String warning : creationWarnings.getWarnings()){
+                    log.warn(warning);
+                }
+
                 return null;
             } else {
                 createdIssue = createResult.getIssue();
@@ -206,7 +228,7 @@ public class ProcessTools {
 
 
             ErrorCollection errors = createValidationResult.getErrorCollection();
-            log.warn("********* something went wrong while validating new issue *************\n");
+            log.warn("********* some errors while validating new issue *************\n");
             log.info(String.valueOf(errors.getErrorMessages().size()));
             for(String error : errors.getErrorMessages()){
                 log.warn(error);
@@ -214,7 +236,7 @@ public class ProcessTools {
 
 
             WarningCollection warnings = createValidationResult.getWarningCollection();
-            log.warn("********* something went wrong while validating new issue *************\n");
+            log.warn("********* some warnings while validating new issue *************\n");
             log.warn(String.valueOf(warnings.getWarnings().size()));
             for(String warning : warnings.getWarnings()){
                 log.warn(warning);

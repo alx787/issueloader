@@ -140,6 +140,59 @@
             <!--<artifactId>atlassian-rest-common</artifactId>-->
             <!--<version>2.7.0</version>-->
         <!--</dependency>-->
+        <!--&lt;!&ndash; https://mvnrepository.com/artifact/com.atlassian.servicedesk/jira-servicedesk-api &ndash;&gt;-->
+        <!--<dependency>-->
+            <!--<groupId>com.atlassian.servicedesk</groupId>-->
+            <!--<artifactId>jira-servicedesk-api</artifactId>-->
+            <!--<version>1000.660.0</version>-->
+            <!--<scope>provided</scope>-->
+        <!--</dependency>-->
+        <!--&lt;!&ndash; https://mvnrepository.com/artifact/com.atlassian.servicedesk/jira-servicedesk-internal-api &ndash;&gt;-->
+        <!--<dependency>-->
+            <!--<groupId>com.atlassian.servicedesk</groupId>-->
+            <!--<artifactId>jira-servicedesk-internal-api</artifactId>-->
+            <!--<version>1000.660.0</version>-->
+            <!--<scope>provided</scope>-->
+        <!--</dependency>-->
+        <!--&lt;!&ndash; https://mvnrepository.com/artifact/com.atlassian.servicedesk/servicedesk-internal-base-api &ndash;&gt;-->
+        <!--<dependency>-->
+            <!--<groupId>com.atlassian.servicedesk</groupId>-->
+            <!--<artifactId>servicedesk-internal-base-api</artifactId>-->
+            <!--<version>5.1.0-QR-0054</version>-->
+            <!--<scope>provided</scope>-->
+        <!--</dependency>-->
+        <!--&lt;!&ndash; https://mvnrepository.com/artifact/com.atlassian.servicedesk/jira-servicedesk &ndash;&gt;-->
+        <!--<dependency>-->
+            <!--<groupId>com.atlassian.servicedesk</groupId>-->
+            <!--<artifactId>jira-servicedesk</artifactId>-->
+            <!--<version>1000.660.0</version>-->
+            <!--<scope>provided</scope>-->
+        <!--</dependency>-->
+        <dependency>
+            <groupId>com.atlassian.servicedesk</groupId>
+            <artifactId>jira-servicedesk-api</artifactId>
+            <version>4.13.15-REL-0004</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.atlassian.servicedesk</groupId>
+            <artifactId>jira-servicedesk-internal-api</artifactId>
+            <version>4.13.15-REL-0004</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.atlassian.servicedesk</groupId>
+            <artifactId>servicedesk-internal-base-api</artifactId>
+            <version>4.13.15-REL-0004</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.atlassian.servicedesk</groupId>
+            <artifactId>jira-servicedesk</artifactId>
+            <version>4.13.15-REL-0004</version>
+            <scope>provided</scope>
+        </dependency>
+
     </dependencies>
     <build>
         <plugins>
@@ -162,6 +215,17 @@
                         </pluginArtifact>
                     </pluginArtifacts>
                     -->
+                    <applications>
+                        <!--<application>-->
+                            <!--<applicationKey>jira-software</applicationKey>-->
+                            <!--<version>${jira.software.application.version}</version>-->
+                        <!--</application>-->
+                        <application>
+                            <applicationKey>jira-servicedesk</applicationKey>
+                            <version>${jira.servicedesk.application.version}</version>
+                        </application>
+                    </applications>
+
                     <enableQuickReload>true</enableQuickReload>
                     <!-- See here for an explanation of default instructions: -->
                     <!-- https://developer.atlassian.com/docs/advanced-topics/configuration-of-instructions-in-atlassian-plugins -->
