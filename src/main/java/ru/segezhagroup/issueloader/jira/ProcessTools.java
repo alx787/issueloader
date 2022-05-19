@@ -24,6 +24,7 @@ import com.atlassian.jira.user.util.UserUtil;
 import com.atlassian.jira.util.ErrorCollection;
 import com.atlassian.jira.util.WarningCollection;
 import com.atlassian.jira.web.util.AttachmentException;
+import com.atlassian.servicedesk.internal.customfields.origin.VpOrigin;
 import com.google.gson.Gson;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
@@ -124,9 +125,83 @@ public class ProcessTools {
 
 
     /////////////////////////////////////////
-    // создание задачи
+    // создание задачи - пробуем (через issueFactory)
     /////////////////////////////////////////
+
     private static MutableIssue createIssue(Project project, SampleIssue sampleIssue) {
+
+        IssueManager issueManager = ComponentAccessor.getIssueManager();
+
+        JiraAuthenticationContext jAC = ComponentAccessor.getJiraAuthenticationContext();
+        ApplicationUser currUser = ComponentAccessor.getJiraAuthenticationContext().getLoggedInUser();
+
+        IssueFactory issueFactory = ComponentAccessor.getIssueFactory();
+
+        MutableIssue newIssue = issueFactory.getIssue();
+
+        CustomFieldManager customFieldManager = ComponentAccessor.getCustomFieldManager();
+
+        if (sampleIssue.getCategory().equals("Доработка функционала")) {
+            newIssue.setIssueTypeId("10511");
+
+            // установить значение поля sd Customer Request Type
+            CustomField crtField = customFieldManager.getCustomFieldObject("customfield_10001");
+            VpOrigin crtType = (VpOrigin)crtField.getCustomFieldType().getSingularObjectFromString("SG1C/requestforchange");
+            newIssue.setCustomFieldValue(crtField, crtType);
+
+        } else {
+            newIssue.setIssueTypeId("10510");
+        }
+
+        newIssue.setStatusId("10113"); // требуется поддержка
+        newIssue.setPriorityId("3"); // medium
+        newIssue.setSummary(sampleIssue.getSummary());
+        newIssue.setDescription("обращение " + sampleIssue.getNumber() + " от " + sampleIssue.getCreatedate() + "\r\n\r\n" +  sampleIssue.getDescription());
+
+        ApplicationUser user = null;
+        user = createFindUser(sampleIssue.getReporteremail(), sampleIssue.getReporter());
+        newIssue.setReporterId(user.getUsername());
+
+//        исполнитель не назначается на этапе создания задачи !!!!
+        try {
+            issueManager.createIssueObject(jAC.getLoggedInUser(), newIssue);
+        } catch (CreateException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+
+
+        user = createFindUser(sampleIssue.getAssigneeemail(), sampleIssue.getAssignee());
+        if (user != null) {
+            newIssue.setAssignee(user);
+            issueManager.updateIssue(currUser, newIssue, EventDispatchOption.DO_NOT_DISPATCH, false);
+        }
+
+
+        // установим дату создания
+        if (!sampleIssue.getCreatedate().isEmpty()) {
+
+            DateTimeFormatter formatDateTime = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
+            LocalDateTime localDateTime = LocalDateTime.from(formatDateTime.parse(sampleIssue.getCreatedate()));
+            Timestamp tsCreateDate = Timestamp.valueOf(localDateTime);
+
+            newIssue.setCreated(tsCreateDate);
+            issueManager.updateIssue(currUser, newIssue, EventDispatchOption.DO_NOT_DISPATCH, false);
+
+        }
+
+
+
+        return newIssue;
+    }
+
+
+
+    /////////////////////////////////////////
+    // создание задачи - не использовать (через issueService и issueInputParameters)
+    /////////////////////////////////////////
+    private static MutableIssue createIssue_dont_use(Project project, SampleIssue sampleIssue) {
 
         IssueService issueService = ComponentAccessor.getIssueService();
         IssueInputParameters issueInputParameters = issueService.newIssueInputParameters();
