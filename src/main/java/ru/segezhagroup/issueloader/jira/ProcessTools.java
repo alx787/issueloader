@@ -24,7 +24,7 @@ import com.atlassian.jira.user.util.UserUtil;
 import com.atlassian.jira.util.ErrorCollection;
 import com.atlassian.jira.util.WarningCollection;
 import com.atlassian.jira.web.util.AttachmentException;
-import com.atlassian.servicedesk.internal.customfields.origin.VpOrigin;
+//import com.atlassian.servicedesk.internal.customfields.origin.VpOrigin;
 import com.google.gson.Gson;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
@@ -128,7 +128,7 @@ public class ProcessTools {
     // создание задачи - пробуем (через issueFactory)
     /////////////////////////////////////////
 
-    private static MutableIssue createIssue(Project project, SampleIssue sampleIssue) {
+    private static MutableIssue createIssue_dont_use(Project project, SampleIssue sampleIssue) {
 
         IssueManager issueManager = ComponentAccessor.getIssueManager();
 
@@ -141,19 +141,28 @@ public class ProcessTools {
 
         CustomFieldManager customFieldManager = ComponentAccessor.getCustomFieldManager();
 
+
+        newIssue.setProjectObject(project);
+
         if (sampleIssue.getCategory().equals("Доработка функционала")) {
-            newIssue.setIssueTypeId("10511");
+//            newIssue.setIssueTypeId("10511");
+            // тестовая база
+            newIssue.setIssueTypeId("10003");
 
             // установить значение поля sd Customer Request Type
             CustomField crtField = customFieldManager.getCustomFieldObject("customfield_10001");
-            VpOrigin crtType = (VpOrigin)crtField.getCustomFieldType().getSingularObjectFromString("SG1C/requestforchange");
+//            VpOrigin crtType = (VpOrigin)crtField.getCustomFieldType().getSingularObjectFromString("SG1C/requestforchange");
+            Object crtType = crtField.getCustomFieldType().getSingularObjectFromString("SG1C/requestforchange");
             newIssue.setCustomFieldValue(crtField, crtType);
 
         } else {
             newIssue.setIssueTypeId("10510");
         }
 
-        newIssue.setStatusId("10113"); // требуется поддержка
+//        newIssue.setStatusId("10113"); // требуется поддержка
+        // тестовая база
+        newIssue.setStatusId("10014"); // требуется поддержка
+        //
         newIssue.setPriorityId("3"); // medium
         newIssue.setSummary(sampleIssue.getSummary());
         newIssue.setDescription("обращение " + sampleIssue.getNumber() + " от " + sampleIssue.getCreatedate() + "\r\n\r\n" +  sampleIssue.getDescription());
@@ -201,7 +210,7 @@ public class ProcessTools {
     /////////////////////////////////////////
     // создание задачи - не использовать (через issueService и issueInputParameters)
     /////////////////////////////////////////
-    private static MutableIssue createIssue_dont_use(Project project, SampleIssue sampleIssue) {
+    private static MutableIssue createIssue(Project project, SampleIssue sampleIssue) {
 
         IssueService issueService = ComponentAccessor.getIssueService();
         IssueInputParameters issueInputParameters = issueService.newIssueInputParameters();
@@ -259,7 +268,7 @@ public class ProcessTools {
 //        CustomFieldManager customFieldManager = ComponentAccessor.getCustomFieldManager();
 //        CustomField tgtField = customFieldManager.getCustomFieldObject("customfield_10001");
 //        com.atlassian.servicedesk.internal.customfields.origin.VpOrigin requestType = (com.atlassian.servicedesk.internal.customfields.origin.VpOrigin) tgtField.getCustomFieldType().getSingularObjectFromString("IT help");
-        issueInputParameters.addCustomFieldValue("customfield_10001", "SG1C", "1C: Request for change");
+//        issueInputParameters.addCustomFieldValue("customfield_10001", "SG1C", "1C: Request for change");
 
 
 
