@@ -83,6 +83,10 @@ issueloader.module = (function () {
             contentType: false,
             success: function (data) {
 
+                AJS.$("#loader-error-log").text(data.description);
+                console.log(data);
+
+
                 var msg = "статус: " + data.status + "<br />" + data.description;
 
                 var myFlag = AJS.flag({
@@ -91,7 +95,6 @@ issueloader.module = (function () {
                 });
 
 
-                // console.log(data);
             },
             error: function (data) {
                 // разблокируем кнопку
@@ -102,6 +105,7 @@ issueloader.module = (function () {
                     body: '<span style="color: #FF0000;">Ошибка при отправке !!!</span>'
                 });
 
+                AJS.$("#loader-error-log").text(data);
             },
             complete: function () {
                 AJS.$("#loader-form .buttons button").removeAttr("disabled");

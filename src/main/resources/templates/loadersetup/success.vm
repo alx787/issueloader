@@ -38,7 +38,14 @@
                     </div>
                 </div>
 
+                <div id="loader-error-log" style="margin-top: 40px; text-align: left;">
+##                    <div>не загруженные заявки</div>
+##                    <div>заявка 1</div>
+##                    <div>заявка 2</div>
+                </div>
+
             </div>
+
         </div>
 
 

@@ -164,7 +164,7 @@ public class ProcessTools {
         newIssue.setStatusId("10014"); // требуется поддержка
         //
         newIssue.setPriorityId("3"); // medium
-        newIssue.setSummary(sampleIssue.getSummary());
+        newIssue.setSummary(sampleIssue.getNumber() + " - " + sampleIssue.getSummary());
         newIssue.setDescription("обращение " + sampleIssue.getNumber() + " от " + sampleIssue.getCreatedate() + "\r\n\r\n" +  sampleIssue.getDescription());
 
         ApplicationUser user = null;
