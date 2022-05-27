@@ -192,6 +192,11 @@
             <version>4.13.15-REL-0004</version>
             <scope>provided</scope>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.atlassian.servicedesk</groupId>-->
+<!--            <artifactId>sd-testing-backdoors</artifactId>-->
+<!--            <version>4.13.15-REL-0004</version>-->
+<!--        </dependency>-->
 
     </dependencies>
     <build>

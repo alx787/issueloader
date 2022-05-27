@@ -242,7 +242,7 @@ public class ProcessTools {
 
         issueInputParameters.setPriorityId("3"); // medium
 
-        issueInputParameters.setSummary(sampleIssue.getSummary());
+        issueInputParameters.setSummary(sampleIssue.getNumber() + " - " + sampleIssue.getSummary());
 
         log.warn("== summary: " + sampleIssue.getSummary());
 
